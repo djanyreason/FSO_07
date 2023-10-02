@@ -3,8 +3,10 @@ import {
   Routes,
   Route,
   Link,
-  useMatch
+  useMatch,
+  useNavigate
 } from 'react-router-dom';
+import { useNotificationContent, useNotificationDispatch } from './NotificationContext';
 
 const Menu = () => {
   const padding = {
@@ -68,6 +70,8 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('');
   const [info, setInfo] = useState('');
 
+  const navigate = useNavigate();
+  const dispatch = useNotificationDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -77,6 +81,12 @@ const CreateNew = (props) => {
       info,
       votes: 0
     });
+    navigate('/');
+    dispatch({
+      type: 'NOTIFY',
+      payload: { content: `a new anecdote ${content} created!` }
+    });
+    setTimeout(() => dispatch({ type: 'REMOVE' }), 5000);
   };
 
   return (
@@ -125,7 +135,8 @@ const App = () => {
     ? anecdotes.find(d => d.id === Number(match.params.id))
     : null;
 
-  const [notification, setNotification] = useState('');
+  //const [notification, setNotification] = useState('');
+  const notification = useNotificationContent();
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
@@ -150,6 +161,13 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      <div>
+        {
+          notification
+            ? notification
+            : ''
+        }
+      </div>
       <Routes>
         <Route path='/anecdotes/:id' element={<Anecdote anecdote={dote} />} />
         <Route path='/about' element={<About />} />
