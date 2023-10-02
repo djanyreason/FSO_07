@@ -90,10 +90,18 @@ const CreateNew = (props) => {
     setTimeout(() => dispatch({ type: 'REMOVE' }), 5000);
   };
 
+  const handleReset = (e) => {
+    e.preventDefault();
+    content.reset();
+    author.reset();
+    info.reset();
+    console.log('click!');
+  };
+
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onReset={handleReset}>
         <div>
           content
           <input { ...content } />
@@ -107,6 +115,7 @@ const CreateNew = (props) => {
           <input { ...info } />
         </div>
         <button>create</button>
+        <input type='reset' />
       </form>
       <br />
     </div>
