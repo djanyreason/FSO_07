@@ -19,7 +19,7 @@ const useCountry = (name) => {
   const [country, setCountry] = useState(null);
 
   useEffect(() => {
-    if(name !== '') {
+    if(country || name !== '') {
       axios
       .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${name}`)
       .then(response => {
