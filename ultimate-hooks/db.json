@@ -1,0 +1,41 @@
+{
+  "notes": [
+    {
+      "content": "the app state is in redux store",
+      "important": false,
+      "id": 1
+    },
+    {
+      "content": "state changes are made with actions",
+      "important": true,
+      "id": 2
+    },
+    {
+      "content": "testing this shit out",
+      "important": false,
+      "id": 3
+    }
+  ],
+  "persons": [
+    {
+      "name": "Aaron Donefuckedupnow",
+      "number": "040-123456",
+      "id": 1
+    },
+    {
+      "name": "Buh La'Kay",
+      "number": "39-44-5323523",
+      "id": 2
+    },
+    {
+      "name": "Dee Nice",
+      "number": "12-43-234345",
+      "id": 3
+    },
+    {
+      "name": "Jay Quellan",
+      "number": "39-23-6423122",
+      "id": 4
+    }
+  ]
+}
