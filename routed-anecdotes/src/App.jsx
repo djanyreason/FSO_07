@@ -67,9 +67,9 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const content = useField('text');
-  const author = useField('text');
-  const info = useField('text');
+  const { reset: resetContent, ...content }  = useField('text');
+  const { reset: resetAuthor, ...author } = useField('text');
+  const { reset: resetInfo, ...info } = useField('text');
 
   const navigate = useNavigate();
   const dispatch = useNotificationDispatch();
@@ -92,10 +92,9 @@ const CreateNew = (props) => {
 
   const handleReset = (e) => {
     e.preventDefault();
-    content.reset();
-    author.reset();
-    info.reset();
-    console.log('click!');
+    resetContent();
+    resetAuthor();
+    resetInfo();
   };
 
   return (
