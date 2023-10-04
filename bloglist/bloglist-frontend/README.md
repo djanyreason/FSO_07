@@ -1,0 +1,1 @@
+Bloglist project for pt. 7 of Full Stack Open
