@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNotificationDispatch } from './Contexts/NotificationContext';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Bloglist from './components/Bloglist';
@@ -10,11 +11,7 @@ import Togglable from './components/Togglable';
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [messageTimeouts, setMessageTimeouts] = useState(0);
-  const messTimRef = useRef(messageTimeouts);
-  messTimRef.current = messageTimeouts;
-
+  const notificationDispatch = useNotificationDispatch();
   const newBlogVisible = useRef();
 
   useEffect(() => {
@@ -31,12 +28,11 @@ const App = () => {
   }, []);
 
   const handleMessage = (newMessage) => {
-    setMessage(newMessage);
-    setMessageTimeouts(messTimRef.current + 1);
-    setTimeout(() => {
-      if (messTimRef.current === 1) setMessage(null);
-      setMessageTimeouts(messTimRef.current - 1);
-    }, 5000);
+    notificationDispatch({
+      type: 'NOTIFY',
+      payload: newMessage
+    });
+    setTimeout(() => notificationDispatch({ type: 'REMOVE' }), 5000);
   };
 
   const doLogin = async (credentials) => {
@@ -141,7 +137,7 @@ const App = () => {
   return (
     <div>
       <h2>{user === null ? '(b)log in to application' : 'blogs'}</h2>
-      <Notification message={message} />
+      <Notification />
       {user === null ? (
         <div>
           <Login doLogin={doLogin} />

@@ -5,3 +5,5 @@
 .babelrc
 cypress/fixtures
 .env
+
+.prettierignore
