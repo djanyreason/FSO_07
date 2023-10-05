@@ -61,49 +61,6 @@ const App = () => {
     setUser(null);
   };
 
-  /*
-  const addLike = async (id) => {
-    const blog = blogs.find((b) => b.id === id);
-    const likedBlog = { ...blog, likes: blog.likes + 1 };
-
-    try {
-      await blogService.updateBlog(likedBlog);
-      setBlogs(blogs.map((b) => (b.id !== id ? b : likedBlog)));
-      handleMessage({
-        color: 'green',
-        content: `Like added to blog ${likedBlog.title}`
-      });
-    } catch (exception) {
-      handleMessage({
-        color: 'red',
-        content: `blog update failed due to error: ${exception.response.data.error}`
-      });
-      return false;
-    }
-  };
-
-  const removeBlog = async (id) => {
-    const blog = blogs.find((b) => b.id === id);
-
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      try {
-        await blogService.deleteBlog(id);
-        setBlogs(blogs.filter((b) => b.id !== id));
-        handleMessage({
-          color: 'green',
-          content: `Blog ${blog.title} by ${blog.author} removed`
-        });
-      } catch (exception) {
-        handleMessage({
-          color: 'red',
-          content: `blog update failed due to error: ${exception.response.data.error}`
-        });
-        return false;
-      }
-    }
-  };
-  */
-
   return (
     <div>
       <h2>{user === null ? '(b)log in to application' : 'blogs'}</h2>
