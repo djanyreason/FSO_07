@@ -1,6 +1,6 @@
 .eslintignore
 .eslintrc.cjs
 /node_modules
-
+.env
 .babelrc
 cypress/fixtures
