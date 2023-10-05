@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setNotification } from './reducers/notificationReducer';
 import { initializeBlogs } from './reducers/blogsReducer';
+import { setUser, logout } from './reducers/userReducer';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Bloglist from './components/Bloglist';
@@ -10,8 +11,6 @@ import Newblog from './components/Newblog';
 import Notification from './components/Notification';
 
 const App = () => {
-  const [user, setUser] = useState(null);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,45 +21,15 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser');
     if (loggedUserJSON) {
       const loggedUser = JSON.parse(loggedUserJSON);
-      setUser(loggedUser);
-      blogService.setToken(loggedUser.token);
+      dispatch(setUser(loggedUser));
     }
   }, []);
 
-  const doLogin = async (credentials) => {
-    if (user) return null;
-
-    try {
-      const userLogin = await loginService.login(credentials);
-      window.localStorage.setItem(
-        'loggedBloglistUser',
-        JSON.stringify(userLogin)
-      );
-      blogService.setToken(userLogin.token);
-      setUser(userLogin);
-      dispatch(
-        setNotification(
-          {
-            color: 'green',
-            content: `${userLogin.name} (b)logged in`
-          },
-          5
-        )
-      );
-    } catch (exception) {
-      dispatch(
-        setNotification(
-          {
-            color: 'red',
-            content: 'wrong username or password'
-          },
-          5
-        )
-      );
-    }
-  };
+  const user = useSelector(({ user }) => user);
 
   const doLogout = () => {
+    dispatch(logout());
+    window.localStorage.removeItem('loggedBloglistUser');
     dispatch(
       setNotification(
         {
@@ -70,41 +39,6 @@ const App = () => {
         5
       )
     );
-    window.localStorage.removeItem('loggedBloglistUser');
-    blogService.setToken(null);
-    setUser(null);
-  };
-
-  const addLike = async (id) => {
-    /*
-    const blog = blogs.find((b) => b.id === id);
-    const likedBlog = { ...blog, likes: blog.likes + 1 };
-
-    try {
-      await blogService.updateBlog(likedBlog);
-      setBlogs(blogs.map((b) => (b.id !== id ? b : likedBlog)));
-      dispatch(
-        setNotification(
-          {
-            color: 'green',
-            content: `Like added to blog ${likedBlog.title}`
-          },
-          5
-        )
-      );
-    } catch (exception) {
-      dispatch(
-        setNotification(
-          {
-            color: 'red',
-            content: `blog update failed due to error: ${exception.response.data.error}`
-          },
-          5
-        )
-      );
-      return false;
-    }
-    */
   };
 
   return (
@@ -113,7 +47,7 @@ const App = () => {
       <Notification />
       {user === null ? (
         <div>
-          <Login doLogin={doLogin} />
+          <Login />
         </div>
       ) : (
         <div>

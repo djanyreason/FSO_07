@@ -1,15 +1,44 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../reducers/userReducer';
+import { setNotification } from '../reducers/notificationReducer';
+import loginService from '../services/login';
 
-
-const Login = ({ doLogin }) => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
 
   const handleLogin = async (event) => {
     event.preventDefault();
 
-    await doLogin({ username, password });
+    try {
+      const userLogin = await loginService.login({ username, password });
+      dispatch(setUser(userLogin));
+      window.localStorage.setItem(
+        'loggedBloglistUser',
+        JSON.stringify(userLogin)
+      );
+      dispatch(
+        setNotification(
+          {
+            color: 'green',
+            content: `${userLogin.name} (b)logged in`
+          },
+          5
+        )
+      );
+    } catch (exception) {
+      dispatch(
+        setNotification(
+          {
+            color: 'red',
+            content: 'wrong username or password'
+          },
+          5
+        )
+      );
+    }
   };
 
   return (
@@ -35,14 +64,12 @@ const Login = ({ doLogin }) => {
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button id='login-button' type='submit'>login</button>
+        <button id='login-button' type='submit'>
+          login
+        </button>
       </form>
     </div>
   );
-};
-
-Login.proptypes = {
-  doLogin: PropTypes.func.isRequired
 };
 
 export default Login;

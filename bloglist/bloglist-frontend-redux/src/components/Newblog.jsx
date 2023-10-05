@@ -1,17 +1,18 @@
 import { useState, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createBlog } from '../reducers/blogsReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import Togglable from './Togglable';
 import PropTypes from 'prop-types';
 
-const Newblog = ({ user }) => {
+const Newblog = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setURL] = useState('');
   const newBlogVisible = useRef();
 
   const dispatch = useDispatch();
+  const user = useSelector(({ user }) => user);
 
   const handleAdd = async (event) => {
     event.preventDefault();
