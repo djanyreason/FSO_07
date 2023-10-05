@@ -107,39 +107,6 @@ const App = () => {
     */
   };
 
-  const removeBlog = async (id) => {
-    /*
-    const blog = blogs.find((b) => b.id === id);
-
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      try {
-        await blogService.deleteBlog(id);
-        setBlogs(blogs.filter((b) => b.id !== id));
-        dispatch(
-          setNotification(
-            {
-              color: 'green',
-              content: `Blog ${blog.title} by ${blog.author} removed`
-            },
-            5
-          )
-        );
-      } catch (exception) {
-        dispatch(
-          setNotification(
-            {
-              color: 'red',
-              content: `blog update failed due to error: ${exception.response.data.error}`
-            },
-            5
-          )
-        );
-        return false;
-      }
-    }
-    */
-  };
-
   return (
     <div>
       <h2>{user === null ? '(b)log in to application' : 'blogs'}</h2>
@@ -154,11 +121,7 @@ const App = () => {
             {user.name} logged in<button onClick={doLogout}>logout</button>
           </p>
           <Newblog user={user} />
-          <Bloglist
-            addLike={addLike}
-            username={user.username}
-            remove={removeBlog}
-          />
+          <Bloglist username={user.username} />
         </div>
       )}
     </div>

@@ -1,11 +1,14 @@
 import { useSelector } from 'react-redux';
+import { createSelector } from '@reduxjs/toolkit';
 import Blog from './Blog';
 import PropTypes from 'prop-types';
 
-const Bloglist = ({ addLike, username, remove }) => {
-  const blogs = useSelector(({ blogs }) =>
-    [...blogs].sort((a, b) => b.likes - a.likes)
+const Bloglist = ({ username }) => {
+  const generateBlogs = createSelector(
+    (state) => state.blogs,
+    (blogs) => [...blogs].sort((a, b) => b.likes - a.likes)
   );
+  const blogs = useSelector(generateBlogs);
 
   if (blogs.length === 0) return <div></div>;
 
@@ -15,10 +18,7 @@ const Bloglist = ({ addLike, username, remove }) => {
         <Blog
           key={blog.id}
           blog={blog}
-          like={() => addLike(blog.id)}
-          deleteBlog={
-            username === blog.user.username ? () => remove(blog.id) : null
-          }
+          deleteButtonVisible={username === blog.user.username}
         />
       ))}
     </div>
@@ -26,9 +26,7 @@ const Bloglist = ({ addLike, username, remove }) => {
 };
 
 Bloglist.propTypes = {
-  addLike: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  remove: PropTypes.func.isRequired
+  username: PropTypes.string.isRequired
 };
 
 export default Bloglist;

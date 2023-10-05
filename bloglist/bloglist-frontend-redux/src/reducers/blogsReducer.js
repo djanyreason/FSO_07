@@ -10,11 +10,19 @@ const blogSlice = createSlice({
     },
     setBlogs(state, action) {
       return action.payload;
+    },
+    likeBlog(state, action) {
+      return state.map((blog) =>
+        blog.id === action.payload ? { ...blog, likes: blog.likes + 1 } : blog
+      );
+    },
+    deleteBlog(state, action) {
+      return state.filter((blog) => blog.id !== action.payload);
     }
   }
 });
 
-const { addBlog, setBlogs } = blogSlice.actions;
+const { addBlog, setBlogs, likeBlog, deleteBlog } = blogSlice.actions;
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -48,6 +56,54 @@ export const createBlog = (content, user) => {
         notification: {
           color: 'red',
           content: `blog addition failed due to error: ${exception.response.data.error}`
+        }
+      };
+    }
+  };
+};
+
+export const addLike = (blog) => {
+  return async (dispatch) => {
+    try {
+      await blogService.updateBlog({ ...blog, likes: blog.likes + 1 });
+      dispatch(likeBlog(blog.id));
+      return {
+        success: true,
+        notification: {
+          color: 'green',
+          content: `Like added to blog ${blog.title}`
+        }
+      };
+    } catch (exception) {
+      return {
+        success: false,
+        notification: {
+          color: 'red',
+          content: `blog update failed due to error: ${exception.response.data.error}`
+        }
+      };
+    }
+  };
+};
+
+export const removeBlog = (blog) => {
+  return async (dispatch) => {
+    try {
+      await blogService.deleteBlog(blog.id);
+      dispatch(deleteBlog(blog.id));
+      return {
+        success: true,
+        notification: {
+          color: 'green',
+          content: `Blog ${blog.title} by ${blog.author} removed`
+        }
+      };
+    } catch (exception) {
+      return {
+        success: false,
+        notification: {
+          color: 'red',
+          content: `blog deletion failed due to error: ${exception.response.data.error}`
         }
       };
     }
