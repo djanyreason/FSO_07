@@ -1,66 +1,85 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { createBlog } from '../reducers/blogsReducer';
+import { setNotification } from '../reducers/notificationReducer';
+import Togglable from './Togglable';
 import PropTypes from 'prop-types';
 
-const Newblog = ({ addBlog }) => {
+const Newblog = ({ user }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setURL] = useState('');
+  const newBlogVisible = useRef();
+
+  const dispatch = useDispatch();
 
   const handleAdd = async (event) => {
     event.preventDefault();
 
-    const result = await addBlog({
-      title: title,
-      author: author,
-      url: url
-    });
+    const result = await dispatch(
+      createBlog(
+        {
+          title: title,
+          author: author,
+          url: url
+        },
+        user
+      )
+    );
 
-    if(result) {
+    dispatch(setNotification(result.notification, 5));
+
+    if (result.success) {
       setTitle('');
       setAuthor('');
       setURL('');
+      newBlogVisible.current.toggleVisibility();
     }
   };
 
   return (
-    <form onSubmit={handleAdd}>
-      <div>
-        title:
-        <input
-          type='text'
-          value={title}
-          name='Title'
-          onChange={({ target }) => setTitle(target.value)}
-          id='blogTitle'
-        />
-      </div>
-      <div>
-        author:
-        <input
-          type='text'
-          value={author}
-          name='Author'
-          onChange={({ target }) => setAuthor(target.value)}
-          id='author'
-        />
-      </div>
-      <div>
-        url:
-        <input
-          type='text'
-          value={url}
-          name='URL'
-          onChange={({ target }) => setURL(target.value)}
-          id='url'
-        />
-      </div>
-      <button id='blogAddButton' type='submit'>create</button>
-    </form>
+    <Togglable buttonLabel='new blog' ref={newBlogVisible}>
+      <form onSubmit={handleAdd}>
+        <div>
+          title:
+          <input
+            type='text'
+            value={title}
+            name='Title'
+            onChange={({ target }) => setTitle(target.value)}
+            id='blogTitle'
+          />
+        </div>
+        <div>
+          author:
+          <input
+            type='text'
+            value={author}
+            name='Author'
+            onChange={({ target }) => setAuthor(target.value)}
+            id='author'
+          />
+        </div>
+        <div>
+          url:
+          <input
+            type='text'
+            value={url}
+            name='URL'
+            onChange={({ target }) => setURL(target.value)}
+            id='url'
+          />
+        </div>
+        <button id='blogAddButton' type='submit'>
+          create
+        </button>
+      </form>
+    </Togglable>
   );
 };
 
 Newblog.proptypes = {
-  addBlog: PropTypes.func.isRequired
+  user: PropTypes.object.isRequired
 };
 
 export default Newblog;
