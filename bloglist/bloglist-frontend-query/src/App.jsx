@@ -18,14 +18,12 @@ const App = () => {
   const newBlogVisible = useRef();
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    );
+    blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser');
-    if(loggedUserJSON) {
+    if (loggedUserJSON) {
       const loggedUser = JSON.parse(loggedUserJSON);
       setUser(loggedUser);
       blogService.setToken(loggedUser.token);
@@ -34,19 +32,22 @@ const App = () => {
 
   const handleMessage = (newMessage) => {
     setMessage(newMessage);
-    setMessageTimeouts(messTimRef.current+1);
+    setMessageTimeouts(messTimRef.current + 1);
     setTimeout(() => {
-      if(messTimRef.current === 1) setMessage(null);
-      setMessageTimeouts(messTimRef.current-1);
+      if (messTimRef.current === 1) setMessage(null);
+      setMessageTimeouts(messTimRef.current - 1);
     }, 5000);
   };
 
   const doLogin = async (credentials) => {
-    if(user) return null;
+    if (user) return null;
 
     try {
       const userLogin = await loginService.login(credentials);
-      window.localStorage.setItem('loggedBloglistUser', JSON.stringify(userLogin));
+      window.localStorage.setItem(
+        'loggedBloglistUser',
+        JSON.stringify(userLogin)
+      );
       blogService.setToken(userLogin.token);
       setUser(userLogin);
       handleMessage({
@@ -97,12 +98,12 @@ const App = () => {
   };
 
   const addLike = async (id) => {
-    const blog = blogs.find(b => b.id === id);
-    const likedBlog = { ...blog, likes: blog.likes+1 };
+    const blog = blogs.find((b) => b.id === id);
+    const likedBlog = { ...blog, likes: blog.likes + 1 };
 
     try {
       await blogService.updateBlog(likedBlog);
-      setBlogs(blogs.map(b => b.id !== id ? b : likedBlog));
+      setBlogs(blogs.map((b) => (b.id !== id ? b : likedBlog)));
       handleMessage({
         color: 'green',
         content: `Like added to blog ${likedBlog.title}`
@@ -116,13 +117,13 @@ const App = () => {
     }
   };
 
-  const removeBlog = async(id) => {
-    const blog = blogs.find(b => b.id === id);
+  const removeBlog = async (id) => {
+    const blog = blogs.find((b) => b.id === id);
 
-    if(window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       try {
         await blogService.deleteBlog(id);
-        setBlogs(blogs.filter(b => b.id !== id));
+        setBlogs(blogs.filter((b) => b.id !== id));
         handleMessage({
           color: 'green',
           content: `Blog ${blog.title} by ${blog.author} removed`
@@ -139,23 +140,28 @@ const App = () => {
 
   return (
     <div>
-      <h2>{user === null
-        ? '(b)log in to application'
-        : 'blogs'}
-      </h2>
-      <Notification message={message}/>
-      {user === null
-        ? <div>
+      <h2>{user === null ? '(b)log in to application' : 'blogs'}</h2>
+      <Notification message={message} />
+      {user === null ? (
+        <div>
           <Login doLogin={doLogin} />
         </div>
-        : <div>
-          <p>{user.name} logged in<button onClick={doLogout}>logout</button></p>
+      ) : (
+        <div>
+          <p>
+            {user.name} logged in<button onClick={doLogout}>logout</button>
+          </p>
           <Togglable buttonLabel='new blog' ref={newBlogVisible}>
             <Newblog addBlog={addBlog} />
           </Togglable>
-          <Bloglist blogs={blogs} addLike={addLike} username={user.username} remove={removeBlog} />
+          <Bloglist
+            blogs={blogs}
+            addLike={addLike}
+            username={user.username}
+            remove={removeBlog}
+          />
         </div>
-      }
+      )}
     </div>
   );
 };
