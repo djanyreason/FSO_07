@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNotificationDispatch } from './Contexts/NotificationContext';
 import blogService from './services/blogs';
 import loginService from './services/login';
@@ -6,17 +6,10 @@ import Bloglist from './components/Bloglist';
 import Login from './components/Login';
 import Newblog from './components/Newblog';
 import Notification from './components/Notification';
-import Togglable from './components/Togglable';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const notificationDispatch = useNotificationDispatch();
-  const newBlogVisible = useRef();
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser');
@@ -68,31 +61,7 @@ const App = () => {
     setUser(null);
   };
 
-  const addBlog = async (newBlog) => {
-    try {
-      const addedBlog = await blogService.addBlog(newBlog);
-      const id = addedBlog.user;
-      addedBlog.user = {
-        id: id,
-        username: user.username,
-        name: user.name
-      };
-      setBlogs(blogs.concat(addedBlog));
-      handleMessage({
-        color: 'green',
-        content: `a new blog ${addedBlog.title} by ${addedBlog.author} added`
-      });
-      newBlogVisible.current.toggleVisibility();
-      return true;
-    } catch (exception) {
-      handleMessage({
-        color: 'red',
-        content: `blog addition failed due to error: ${exception.response.data.error}`
-      });
-      return false;
-    }
-  };
-
+  /*
   const addLike = async (id) => {
     const blog = blogs.find((b) => b.id === id);
     const likedBlog = { ...blog, likes: blog.likes + 1 };
@@ -133,6 +102,7 @@ const App = () => {
       }
     }
   };
+  */
 
   return (
     <div>
@@ -147,15 +117,8 @@ const App = () => {
           <p>
             {user.name} logged in<button onClick={doLogout}>logout</button>
           </p>
-          <Togglable buttonLabel='new blog' ref={newBlogVisible}>
-            <Newblog addBlog={addBlog} />
-          </Togglable>
-          <Bloglist
-            blogs={blogs}
-            addLike={addLike}
-            username={user.username}
-            remove={removeBlog}
-          />
+          <Newblog user={user} />
+          <Bloglist username={user.username} />
         </div>
       )}
     </div>

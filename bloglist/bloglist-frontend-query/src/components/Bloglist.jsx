@@ -1,30 +1,34 @@
+import { useQuery } from '@tanstack/react-query';
+import blogService from '../services/blogs';
 import Blog from './Blog';
 import PropTypes from 'prop-types';
 
-const Bloglist = ({ blogs, addLike, username, remove }) => {
-  if(!blogs) return (<div></div>);
+const Bloglist = ({ username }) => {
+  const blogQuery = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+    refetchOnWindowFocus: false
+  });
+
+  if (blogQuery.isLoading) return <div>loading blogs...</div>;
+
+  const blogs = blogQuery.data;
+
+  if (!blogs) return <div></div>;
 
   return (
     <div className='blogList'>
       {blogs
-        .sort((a, b) => b.likes-a.likes)
-        .map(blog =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            like={() => addLike(blog.id)}
-            deleteBlog={username === blog.user.username ? () => remove(blog.id) : null}
-          />
-        )}
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => (
+          <Blog key={blog.id} blog={blog} like={() => null} deleteBlog={null} />
+        ))}
     </div>
   );
 };
 
 Bloglist.propTypes = {
-  blogs: PropTypes.array.isRequired,
-  addLike: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  remove: PropTypes.func.isRequired
+  username: PropTypes.string.isRequired
 };
 
 export default Bloglist;

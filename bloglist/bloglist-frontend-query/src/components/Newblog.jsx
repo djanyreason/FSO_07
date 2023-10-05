@@ -1,66 +1,109 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNotificationDispatch } from '../Contexts/NotificationContext';
 import PropTypes from 'prop-types';
+import blogService from '../services/blogs';
+import Togglable from '../components/Togglable';
 
-const Newblog = ({ addBlog }) => {
+const Newblog = ({ user }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setURL] = useState('');
+  const newBlogVisible = useRef();
 
-  const handleAdd = async (event) => {
-    event.preventDefault();
+  const queryClient = useQueryClient();
+  const notificationDispatch = useNotificationDispatch();
 
-    const result = await addBlog({
-      title: title,
-      author: author,
-      url: url
-    });
-
-    if(result) {
-      setTitle('');
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.addBlog,
+    onSuccess: (newBlog) => {
+      const blogToAdd = {
+        ...newBlog,
+        user
+      };
+      const blogs = queryClient.getQueryData({ queryKey: ['blogs'] });
+      queryClient.setQueryData(
+        { queryKey: ['blogs'] },
+        blogs.concat(blogToAdd)
+      );
       setAuthor('');
+      setTitle('');
       setURL('');
+      notificationDispatch({
+        type: 'NOTIFY',
+        payload: {
+          color: 'green',
+          content: `a new blog ${newBlog.title} by ${newBlog.author} added`
+        }
+      });
+      setTimeout(() => notificationDispatch({ type: 'REMOVE' }), 5000);
+      newBlogVisible.current.toggleVisibility();
+    },
+    onError: (error) => {
+      notificationDispatch({
+        type: 'NOTIFY',
+        payload: {
+          color: 'red',
+          content: `blog addition failed due to error: ${error.response.data.error}`
+        }
+      });
+      setTimeout(() => notificationDispatch({ type: 'REMOVE' }), 5000);
     }
+  });
+
+  const handleAdd = (event) => {
+    event.preventDefault();
+    const newBlog = {
+      title,
+      author,
+      url
+    };
+    newBlogMutation.mutate(newBlog);
   };
 
   return (
-    <form onSubmit={handleAdd}>
-      <div>
-        title:
-        <input
-          type='text'
-          value={title}
-          name='Title'
-          onChange={({ target }) => setTitle(target.value)}
-          id='blogTitle'
-        />
-      </div>
-      <div>
-        author:
-        <input
-          type='text'
-          value={author}
-          name='Author'
-          onChange={({ target }) => setAuthor(target.value)}
-          id='author'
-        />
-      </div>
-      <div>
-        url:
-        <input
-          type='text'
-          value={url}
-          name='URL'
-          onChange={({ target }) => setURL(target.value)}
-          id='url'
-        />
-      </div>
-      <button id='blogAddButton' type='submit'>create</button>
-    </form>
+    <Togglable buttonLabel='new blog' ref={newBlogVisible}>
+      <form onSubmit={handleAdd}>
+        <div>
+          title:
+          <input
+            type='text'
+            value={title}
+            name='Title'
+            onChange={({ target }) => setTitle(target.value)}
+            id='blogTitle'
+          />
+        </div>
+        <div>
+          author:
+          <input
+            type='text'
+            value={author}
+            name='Author'
+            onChange={({ target }) => setAuthor(target.value)}
+            id='author'
+          />
+        </div>
+        <div>
+          url:
+          <input
+            type='text'
+            value={url}
+            name='URL'
+            onChange={({ target }) => setURL(target.value)}
+            id='url'
+          />
+        </div>
+        <button id='blogAddButton' type='submit'>
+          create
+        </button>
+      </form>
+    </Togglable>
   );
 };
 
-Newblog.proptypes = {
-  addBlog: PropTypes.func.isRequired
+Newblog.propTypes = {
+  user: PropTypes.object.isRequired
 };
 
 export default Newblog;
