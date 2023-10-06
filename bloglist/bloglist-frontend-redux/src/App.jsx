@@ -30,33 +30,15 @@ const App = () => {
 
   const user = useSelector(({ login }) => login);
 
-  const doLogout = () => {
-    dispatch(logout());
-    window.localStorage.removeItem('loggedBloglistUser');
-    dispatch(
-      setNotification(
-        {
-          color: 'green',
-          content: `${user.name} logged out`
-        },
-        5
-      )
-    );
-  };
-
   return (
     <div>
       <h2>{user === null ? '(b)log in to application' : 'blogs'}</h2>
       <Notification />
+      <Login />
       {user === null ? (
-        <div>
-          <Login />
-        </div>
+        <div></div>
       ) : (
         <div>
-          <p>
-            {user.name} logged in<button onClick={doLogout}>logout</button>
-          </p>
           <Menu />
           <br />
           <Routes>
