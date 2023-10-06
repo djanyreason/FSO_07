@@ -11,6 +11,7 @@ import Notification from './components/Notification';
 import Menu from './components/Menu';
 import Userlist from './components/Userlist';
 import User from './components/User';
+import Blog from './components/Blog';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ const App = () => {
           <Menu />
           <br />
           <Routes>
+            <Route path='/blogs/:id' element={<Blog />} />
             <Route path='/users/:id' element={<User />} />
             <Route path='/users' element={<Userlist />} />
             <Route
