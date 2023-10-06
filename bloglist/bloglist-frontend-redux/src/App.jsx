@@ -1,31 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Routes, Route, Link } from 'react-router-dom';
 import { setNotification } from './reducers/notificationReducer';
 import { initializeBlogs } from './reducers/blogsReducer';
-import { setUser, logout } from './reducers/userReducer';
-import blogService from './services/blogs';
-import loginService from './services/login';
+import { initializeUsers } from './reducers/userReducer';
+import { login, logout } from './reducers/loginReducer';
 import Bloglist from './components/Bloglist';
 import Login from './components/Login';
 import Newblog from './components/Newblog';
 import Notification from './components/Notification';
+import Menu from './components/Menu';
+import Userlist from './components/Userlist';
 
 const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(initializeBlogs());
+    dispatch(initializeUsers());
   }, []);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser');
     if (loggedUserJSON) {
       const loggedUser = JSON.parse(loggedUserJSON);
-      dispatch(setUser(loggedUser));
+      dispatch(login(loggedUser));
     }
   }, []);
 
-  const user = useSelector(({ user }) => user);
+  const user = useSelector(({ login }) => login);
 
   const doLogout = () => {
     dispatch(logout());
@@ -54,8 +57,21 @@ const App = () => {
           <p>
             {user.name} logged in<button onClick={doLogout}>logout</button>
           </p>
-          <Newblog user={user} />
-          <Bloglist username={user.username} />
+          <Menu />
+          <br />
+          <Routes>
+            <Route path='/users' element={<Userlist />} />
+            <Route
+              path='/'
+              element={
+                <div>
+                  <Newblog user={user} />
+                  <br />
+                  <Bloglist username={user.username} />
+                </div>
+              }
+            />
+          </Routes>
         </div>
       )}
     </div>

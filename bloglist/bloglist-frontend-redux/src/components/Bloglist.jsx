@@ -8,7 +8,7 @@ const Bloglist = () => {
     (blogs) => [...blogs].sort((a, b) => b.likes - a.likes)
   );
   const blogs = useSelector(generateBlogs);
-  const username = useSelector(({ user }) => user.username);
+  const username = useSelector(({ login }) => login.username);
 
   if (blogs.length === 0) return <div></div>;
 

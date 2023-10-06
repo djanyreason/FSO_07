@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../reducers/userReducer';
+import { login } from '../reducers/loginReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import loginService from '../services/login';
 
@@ -14,7 +14,7 @@ const Login = () => {
 
     try {
       const userLogin = await loginService.login({ username, password });
-      dispatch(setUser(userLogin));
+      dispatch(login(userLogin));
       window.localStorage.setItem(
         'loggedBloglistUser',
         JSON.stringify(userLogin)

@@ -12,7 +12,7 @@ const Newblog = () => {
   const newBlogVisible = useRef();
 
   const dispatch = useDispatch();
-  const user = useSelector(({ user }) => user);
+  const user = useSelector(({ login }) => login);
 
   const handleAdd = async (event) => {
     event.preventDefault();
