@@ -46,7 +46,9 @@ const Blog = () => {
         {blog.title} {blog.author}
       </h2>
       <div>
-        <a href={blog.url}>{blog.url}</a>
+        <a href={blog.url} target='_blank' rel='noreferrer'>
+          {blog.url}
+        </a>
       </div>
       <div>
         likes {blog.likes}
