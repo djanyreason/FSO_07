@@ -33,15 +33,15 @@ const App = () => {
 
   return (
     <div>
-      <h2>{user === null ? '(b)log in to application' : 'blogs'}</h2>
-      <Notification />
-      <Login />
       {user === null ? (
-        <div></div>
+        <div>
+          <h2>(b)log in to application</h2>
+          <Login />
+        </div>
       ) : (
         <div>
           <Menu />
-          <br />
+          <h2>blog app</h2>
           <Routes>
             <Route path='/blogs/:id' element={<Blog />} />
             <Route path='/users/:id' element={<User />} />
