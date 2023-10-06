@@ -5,9 +5,9 @@ const { userExtractor } = require('../utils/middleware');
 const jwt = require('jsonwebtoken');
 
 blogListRouter.get('/', async (request, response) => {
-  response.json(await Blog
-    .find({})
-    .populate('user', { username: 1, name: 1, id: 1 }));
+  response.json(
+    await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
+  );
 });
 
 blogListRouter.post('/', userExtractor, async (request, response) => {
@@ -30,7 +30,7 @@ blogListRouter.post('/', userExtractor, async (request, response) => {
 
 blogListRouter.delete('/:id', userExtractor, async (request, response) => {
   let thisBlog = await Blog.findById(request.params.id);
-  if(thisBlog) {
+  if (thisBlog) {
     const thisUser = request.user;
 
     if (thisBlog.user.toString() !== thisUser._id.toString()) {
@@ -39,7 +39,9 @@ blogListRouter.delete('/:id', userExtractor, async (request, response) => {
 
     await Blog.findByIdAndRemove(request.params.id);
 
-    thisUser.blogs = thisUser.blogs.filter(aBlog => aBlog.toString() !== request.params.id);
+    thisUser.blogs = thisUser.blogs.filter(
+      (aBlog) => aBlog.toString() !== request.params.id
+    );
     await thisUser.save();
   }
 
@@ -54,9 +56,21 @@ blogListRouter.put('/:id', async (request, response) => {
     likes: request.body.likes
   };
 
-  const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true });
+  const savedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true
+  });
 
   response.json(savedBlog);
+});
+
+blogListRouter.post('/:id/comments', async (request, response) => {
+  const savedBlog = await Blog.findByIdAndUpdate(
+    request.params.id,
+    { $push: { comments: request.body.comment } },
+    { returnDocument: 'after' }
+  );
+
+  response.status(201).json(savedBlog);
 });
 
 module.exports = blogListRouter;
