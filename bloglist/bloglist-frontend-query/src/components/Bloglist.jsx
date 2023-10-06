@@ -1,14 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
+import { useUserContent } from '../Contexts/UserContext';
 import blogService from '../services/blogs';
 import Blog from './Blog';
-import PropTypes from 'prop-types';
 
-const Bloglist = ({ username }) => {
+const Bloglist = () => {
   const blogQuery = useQuery({
     queryKey: ['blogs'],
     queryFn: blogService.getAll,
     refetchOnWindowFocus: false
   });
+
+  const user = useUserContent();
 
   if (blogQuery.isLoading) return <div>loading blogs...</div>;
 
@@ -24,15 +26,11 @@ const Bloglist = ({ username }) => {
           <Blog
             key={blog.id}
             blog={blog}
-            deleteBlog={blog.user.username === username}
+            deleteBlog={blog.user.username === user.username}
           />
         ))}
     </div>
   );
-};
-
-Bloglist.propTypes = {
-  username: PropTypes.string.isRequired
 };
 
 export default Bloglist;

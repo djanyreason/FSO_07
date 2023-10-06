@@ -1,11 +1,11 @@
 import { useState, useRef } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNotificationDispatch } from '../Contexts/NotificationContext';
-import PropTypes from 'prop-types';
+import { useUserContent } from '../Contexts/UserContext';
 import blogService from '../services/blogs';
 import Togglable from '../components/Togglable';
 
-const Newblog = ({ user }) => {
+const Newblog = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setURL] = useState('');
@@ -13,6 +13,7 @@ const Newblog = ({ user }) => {
 
   const queryClient = useQueryClient();
   const notificationDispatch = useNotificationDispatch();
+  const user = useUserContent();
 
   const newBlogMutation = useMutation({
     mutationFn: blogService.addBlog,
@@ -100,10 +101,6 @@ const Newblog = ({ user }) => {
       </form>
     </Togglable>
   );
-};
-
-Newblog.propTypes = {
-  user: PropTypes.object.isRequired
 };
 
 export default Newblog;
