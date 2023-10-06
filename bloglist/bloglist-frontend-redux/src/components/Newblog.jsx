@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { createSelector } from '@reduxjs/toolkit';
 import { createBlog } from '../reducers/blogsReducer';
 import { setNotification } from '../reducers/notificationReducer';
+import { addBlogToUser } from '../reducers/userReducer';
 import Togglable from './Togglable';
 import PropTypes from 'prop-types';
 
@@ -12,21 +14,17 @@ const Newblog = () => {
   const newBlogVisible = useRef();
 
   const dispatch = useDispatch();
-  const user = useSelector(({ login }) => login);
+  const selector = createSelector(
+    [(state) => state.users, (state) => state.login],
+    (users, login) => users.find((user) => user.username === login.username)
+  );
+  const user = useSelector(selector);
 
   const handleAdd = async (event) => {
     event.preventDefault();
 
-    const result = await dispatch(
-      createBlog(
-        {
-          title: title,
-          author: author,
-          url: url
-        },
-        user
-      )
-    );
+    const newBlog = { title, author, url };
+    const result = await dispatch(createBlog(newBlog, user));
 
     dispatch(setNotification(result.notification, 5));
 
@@ -34,6 +32,7 @@ const Newblog = () => {
       setTitle('');
       setAuthor('');
       setURL('');
+      dispatch(addBlogToUser({ ...newBlog, id: result.id }, user));
       newBlogVisible.current.toggleVisibility();
     }
   };

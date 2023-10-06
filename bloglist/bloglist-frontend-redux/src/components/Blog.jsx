@@ -1,11 +1,17 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addLike, removeBlog } from '../reducers/blogsReducer';
 import { setNotification } from '../reducers/notificationReducer';
+import { removeBlogFromUser } from '../reducers/userReducer';
 import PropTypes from 'prop-types';
 
-const Blog = ({ blog, deleteButtonVisible }) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch();
+  const user = useSelector(({ users }) =>
+    users.find((user) => user.id === blog.user.id)
+  );
+  const login = useSelector(({ login }) => login);
+  const deleteButtonVisible = user.username === login.username;
 
   const blogStyle = {
     paddingTop: 10,
@@ -28,6 +34,7 @@ const Blog = ({ blog, deleteButtonVisible }) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       const result = await dispatch(removeBlog(blog));
       dispatch(setNotification(result.notification, 5));
+      dispatch(removeBlogFromUser(blog, user));
     }
   };
 
@@ -65,8 +72,7 @@ const Blog = ({ blog, deleteButtonVisible }) => {
 };
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  deleteButtonVisible: PropTypes.bool
+  blog: PropTypes.object.isRequired
 };
 
 export default Blog;

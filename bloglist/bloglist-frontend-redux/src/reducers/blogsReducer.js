@@ -45,6 +45,7 @@ export const createBlog = (content, user) => {
 
       return {
         success: true,
+        id: newBlog.id,
         notification: {
           color: 'green',
           content: `a new blog ${newBlog.title} by ${newBlog.author} added`
