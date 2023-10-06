@@ -4,13 +4,13 @@ const baseUrl = '/api/blogs';
 let token = null;
 
 const setToken = (newToken) => {
-  if(newToken) token = `Bearer ${newToken}`;
+  if (newToken) token = `Bearer ${newToken}`;
   else token = null;
 };
 
 const getAll = () => {
   const request = axios.get(baseUrl);
-  return request.then(response => response.data);
+  return request.then((response) => response.data);
 };
 
 const addBlog = async (newBlog) => {
@@ -39,4 +39,17 @@ const deleteBlog = async (id) => {
   return response.data;
 };
 
-export default { getAll, setToken, addBlog, updateBlog, deleteBlog };
+const addComment = async (id, comment) => {
+  const response = await axios.post(`${baseUrl}/${id}/comments`, { comment });
+
+  return response.data;
+};
+
+export default {
+  getAll,
+  setToken,
+  addBlog,
+  updateBlog,
+  deleteBlog,
+  addComment
+};

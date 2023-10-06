@@ -16,13 +16,21 @@ const blogSlice = createSlice({
         blog.id === action.payload ? { ...blog, likes: blog.likes + 1 } : blog
       );
     },
+    commentBlog(state, action) {
+      return state.map((blog) =>
+        blog.id === action.payload.id
+          ? { ...blog, comments: blog.comments.concat(action.payload.comment) }
+          : blog
+      );
+    },
     deleteBlog(state, action) {
       return state.filter((blog) => blog.id !== action.payload);
     }
   }
 });
 
-const { addBlog, setBlogs, likeBlog, deleteBlog } = blogSlice.actions;
+const { addBlog, setBlogs, likeBlog, commentBlog, deleteBlog } =
+  blogSlice.actions;
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -105,6 +113,31 @@ export const removeBlog = (blog) => {
         notification: {
           color: 'red',
           content: `blog deletion failed due to error: ${exception.response.data.error}`
+        }
+      };
+    }
+  };
+};
+
+export const commmentOnBlog = (comment, blog) => {
+  const id = blog.id;
+  return async (dispatch) => {
+    try {
+      await blogService.addComment(id, comment);
+      dispatch(commentBlog({ id, comment }));
+      return {
+        success: true,
+        notification: {
+          color: 'green',
+          content: `Comment '${comment}' added to blog ${blog.title}`
+        }
+      };
+    } catch (exception) {
+      return {
+        success: false,
+        notification: {
+          color: 'red',
+          content: `comment failed due to error: ${exception.response.data.error}`
         }
       };
     }

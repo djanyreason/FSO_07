@@ -36,11 +36,13 @@ const App = () => {
       {user === null ? (
         <div>
           <h2>(b)log in to application</h2>
+          <Notification />
           <Login />
         </div>
       ) : (
         <div>
           <Menu />
+          <Notification />
           <h2>blog app</h2>
           <Routes>
             <Route path='/blogs/:id' element={<Blog />} />
