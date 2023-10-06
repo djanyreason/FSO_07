@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
 import { Link } from 'react-router-dom';
-import Blog from './Blog';
 
 const Bloglist = () => {
   const generateBlogs = createSelector(

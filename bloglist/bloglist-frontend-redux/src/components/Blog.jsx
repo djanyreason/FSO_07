@@ -1,15 +1,10 @@
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useMatch } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { useMatch, useNavigate } from 'react-router-dom';
-import { addLike, removeBlog } from '../reducers/blogsReducer';
-import { setNotification } from '../reducers/notificationReducer';
-import { removeBlogFromUser } from '../reducers/userReducer';
+import BlogDetails from './BlogDetails';
+import BlogComments from './BlogComments';
 
 const Blog = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const id = useMatch('/blogs/:id').params.id;
   const findBlog = createSelector(
     (state) => state.blogs,
@@ -17,51 +12,12 @@ const Blog = () => {
   );
   const blog = useSelector(findBlog);
 
-  const user = useSelector(({ users }) =>
-    !blog ? null : users.find((user) => user.id === blog.user.id)
-  );
-  const login = useSelector(({ login }) => login);
-
-  if (!blog || !user) return null;
-
-  const deleteButtonVisible = user.username === login.username;
-
-  const like = async () => {
-    const result = await dispatch(addLike(blog));
-    dispatch(setNotification(result.notification, 5));
-  };
-
-  const deleteBlog = async () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      const result = await dispatch(removeBlog(blog));
-      dispatch(setNotification(result.notification, 5));
-      dispatch(removeBlogFromUser(blog, user));
-      navigate('/');
-    }
-  };
+  if (!blog) return null;
 
   return (
     <div>
-      <h2>
-        {blog.title} {blog.author}
-      </h2>
-      <div>
-        <a href={blog.url} target='_blank' rel='noreferrer'>
-          {blog.url}
-        </a>
-      </div>
-      <div>
-        likes {blog.likes}
-        <button className='likeButton' onClick={like}>
-          like
-        </button>
-      </div>
-      <div>added by {blog.user.name}</div>
-      {!deleteButtonVisible ? (
-        <></>
-      ) : (
-        <button onClick={deleteBlog}>remove</button>
-      )}
+      <BlogDetails blog={blog} />
+      <BlogComments blog={blog} />
     </div>
   );
 };

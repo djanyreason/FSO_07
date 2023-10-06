@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { login, logout } from '../reducers/loginReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import loginService from '../services/login';
-import Menu from './Menu';
 
 const Login = () => {
   const [username, setUsername] = useState('');
