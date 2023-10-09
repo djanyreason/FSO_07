@@ -5,7 +5,7 @@ import { createBlog } from '../reducers/blogsReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import { addBlogToUser } from '../reducers/userReducer';
 import Togglable from './Togglable';
-import PropTypes from 'prop-types';
+import { Form, Button } from 'react-bootstrap';
 
 const Newblog = () => {
   const [title, setTitle] = useState('');
@@ -39,47 +39,36 @@ const Newblog = () => {
 
   return (
     <Togglable buttonLabel='new blog' ref={newBlogVisible}>
-      <form onSubmit={handleAdd}>
-        <div>
-          title:
-          <input
+      <Form onSubmit={handleAdd}>
+        <Form.Group>
+          <Form.Label>title:</Form.Label>
+          <Form.Control
             type='text'
             value={title}
             name='Title'
             onChange={({ target }) => setTitle(target.value)}
-            id='blogTitle'
           />
-        </div>
-        <div>
-          author:
-          <input
+          <Form.Label>author:</Form.Label>
+          <Form.Control
             type='text'
             value={author}
             name='Author'
             onChange={({ target }) => setAuthor(target.value)}
-            id='author'
           />
-        </div>
-        <div>
-          url:
-          <input
+          <Form.Label>url:</Form.Label>
+          <Form.Control
             type='text'
             value={url}
             name='URL'
             onChange={({ target }) => setURL(target.value)}
-            id='url'
           />
-        </div>
-        <button id='blogAddButton' type='submit'>
-          create
-        </button>
-      </form>
+          <Button variant='primary' type='submit'>
+            create
+          </Button>
+        </Form.Group>
+      </Form>
     </Togglable>
   );
-};
-
-Newblog.proptypes = {
-  user: PropTypes.object.isRequired
 };
 
 export default Newblog;

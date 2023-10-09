@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { Alert } from 'react-bootstrap';
 
 const Notification = () => {
   const notification = useSelector(({ notification }) =>
@@ -9,18 +10,14 @@ const Notification = () => {
 
   if (!notification) return <div></div>;
 
-  const style = {
-    color: notification.color,
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    marginTop: 10
-  };
+  const style =
+    notification.color === 'green'
+      ? 'success'
+      : notification.color === 'red'
+      ? 'danger'
+      : 'secondary';
 
-  return <div style={style}>{notification.content}</div>;
+  return <Alert variant={style}>{notification.content}</Alert>;
 };
 
 export default Notification;

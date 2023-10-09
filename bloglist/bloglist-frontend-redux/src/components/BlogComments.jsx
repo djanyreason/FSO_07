@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { commmentOnBlog } from '../reducers/blogsReducer';
 import { setNotification } from '../reducers/notificationReducer';
+import { Form, Button } from 'react-bootstrap';
 
 const BlogComments = ({ blog }) => {
   const [comment, setComment] = useState('');
@@ -24,17 +25,19 @@ const BlogComments = ({ blog }) => {
   return (
     <div>
       <h3 style={hideStyle}>comments</h3>
-      <form onSubmit={handleAdd} style={formStyle}>
-        <div>
-          <input
+      <Form onSubmit={handleAdd} style={formStyle}>
+        <Form.Group>
+          <Form.Control
             type='text'
+            name='comment'
             value={comment}
-            name='Comment'
             onChange={({ target }) => setComment(target.value)}
           />
-          <button type='submit'>add comment</button>
-        </div>
-      </form>
+          <Button variant='primary' type='submit'>
+            add comment
+          </Button>
+        </Form.Group>
+      </Form>
       <ul style={hideStyle}>
         {blog.comments.map((comment) => (
           <li key={comment} style={hideStyle}>

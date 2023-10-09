@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { login, logout } from '../reducers/loginReducer';
+import { useDispatch } from 'react-redux';
+import { login } from '../reducers/loginReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import loginService from '../services/login';
+import { Form, Button } from 'react-bootstrap';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -43,31 +44,27 @@ const Login = () => {
 
   return (
     <div>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            id='username'
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>username:</Form.Label>
+          <Form.Control
             type='text'
             value={username}
             name='Username'
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
-          password
-          <input
-            id='password'
+          <Form.Label>password:</Form.Label>
+          <Form.Control
             type='password'
             value={password}
             name='Password'
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
-        <button id='login-button' type='submit'>
-          login
-        </button>
-      </form>
+          <Button variant='primary' type='submit'>
+            login
+          </Button>
+        </Form.Group>
+      </Form>
     </div>
   );
 };

@@ -1,11 +1,10 @@
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createSelector } from '@reduxjs/toolkit';
-import { useMatch, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { addLike, removeBlog } from '../reducers/blogsReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import { removeBlogFromUser } from '../reducers/userReducer';
+import { Button } from 'react-bootstrap';
 
 const BlogDetails = ({ blog }) => {
   const dispatch = useDispatch();
@@ -44,15 +43,17 @@ const BlogDetails = ({ blog }) => {
       </div>
       <div>
         likes {blog.likes}
-        <button className='likeButton' onClick={like}>
+        <Button variant='outline-success' size='sm' onClick={like}>
           like
-        </button>
+        </Button>
       </div>
       <div>added by {blog.user.name}</div>
       {!deleteButtonVisible ? (
         <></>
       ) : (
-        <button onClick={deleteBlog}>remove</button>
+        <Button onClick={deleteBlog} variant='outline-danger' size='sm'>
+          remove
+        </Button>
       )}
     </div>
   );

@@ -32,7 +32,7 @@ const App = () => {
   const user = useSelector(({ login }) => login);
 
   return (
-    <div>
+    <div className='container'>
       {user === null ? (
         <div>
           <h2>(b)log in to application</h2>

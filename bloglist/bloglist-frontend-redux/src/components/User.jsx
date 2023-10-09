@@ -1,6 +1,7 @@
 import { useMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
+import { Table } from 'react-bootstrap';
 
 const User = () => {
   const id = useMatch('/users/:id').params.id;
@@ -16,11 +17,15 @@ const User = () => {
     <div>
       <h2>{user.name}</h2>
       <strong>added blogs</strong>
-      <ul>
-        {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
-        ))}
-      </ul>
+      <Table striped>
+        <tbody>
+          {user.blogs.map((blog) => (
+            <tr key={blog.id}>
+              <td>{blog.title}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </div>
   );
 };
