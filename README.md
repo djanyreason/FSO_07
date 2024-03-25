@@ -9,4 +9,4 @@ There are four projects contained in this repository, each in their own subfolde
 * /routed-anecdotes- a web app that displays a list of software development anecdotes; uses React Router for navigation, and custom hooks
 * /country-hook - a web app that searches for countries by a string entered, providing a list of all matching countries if multiple are found, and if only one is found additional details about that country; uses custom hooks
 * /ultimate-hooks - a generic web app that interfaces with an API using a custom hook to handle multiple databases
-* /bloglise - a web app that displays a list of blogposts stored in a database; uses React Router, custom hooks, and is styled with CSS and Bootstrap
+* /bloglist - a web app that displays a list of blogposts stored in a database; uses React Router, custom hooks, and is styled with CSS and Bootstrap
